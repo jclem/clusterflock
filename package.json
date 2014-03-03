@@ -1,0 +1,27 @@
+{
+  "name": "clusterflock",
+  "version": "0.0.0",
+  "description": "a clustering http server for node",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jclem/clusterflock"
+  },
+  "keywords": [
+    "cluster",
+    "server",
+    "http"
+  ],
+  "author": "Jonathan Clem",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jclem/clusterflock/issues"
+  },
+  "homepage": "https://github.com/jclem/clusterflock",
+  "dependencies": {
+    "logfmt": "~0.21.0"
+  }
+}
