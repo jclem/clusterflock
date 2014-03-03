@@ -4,7 +4,7 @@
   "description": "a clustering http server for node",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "./node_modules/jasmine-node/bin/jasmine-node spec/"
   },
   "repository": {
     "type": "git",
@@ -23,5 +23,9 @@
   "homepage": "https://github.com/jclem/clusterflock",
   "dependencies": {
     "logfmt": "~0.21.0"
+  },
+  "devDependencies": {
+    "jasmine-node": "~1.13.1",
+    "proxyquire": "~0.5.2"
   }
 }
