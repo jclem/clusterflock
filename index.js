@@ -2,10 +2,12 @@ var cluster = require('cluster'),
     master  = require('./lib/master'),
     worker  = require('./lib/worker');
 
-module.exports = function(handler) {
+module.exports = function(handler, options) {
+  options || (options = {});
+
   if (cluster.isMaster) {
-    master();
+    master(options);
   } else {
-    worker(handler);
+    worker(handler, options);
   }
 };
