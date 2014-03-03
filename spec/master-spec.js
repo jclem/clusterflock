@@ -177,7 +177,7 @@ describe('master', function() {
     });
   });
 
-  it('kills each worker on SIGQUIT the timeout', function() {
+  it('kills each worker on SIGQUIT after the timeout', function() {
     var killSpy = jasmine.createSpy();
     cluster.workers = { 1: { kill: killSpy } };
     master({ timeout: 10 });
@@ -185,6 +185,15 @@ describe('master', function() {
     waits(10);
     runs(function() {
       expect(killSpy).toHaveBeenCalled();
+    });
+  });
+
+  it('kills its own process on SIGQUIT after the timeout', function() {
+    master({ timeout: 10 });
+    process.emit('SIGQUIT');
+    waits(10);
+    runs(function() {
+      expect(process.kill).toHaveBeenCalled();
     });
   });
 });
