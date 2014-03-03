@@ -1,6 +1,6 @@
 {
   "name": "clusterflock",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "a clustering http server for node",
   "main": "index.js",
   "scripts": {
