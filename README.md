@@ -1,4 +1,4 @@
-# clusterflock
+# clusterflock  [![Build Status](https://travis-ci.org/jclem/clusterflock.png)](https://travis-ci.org/jclem/clusterflock)
 
 ![flocking birds](http://cl.ly/image/0e3E400R1n0U/81938785_7755757d8a_m.jpg)
 
