@@ -1,16 +1,21 @@
 require('./spec-helper');
 
-var proxyquire = require('proxyquire'),
-    logfmt     = {},
-    http       = {};
+var proxyquire = require('proxyquire');
 
 describe('worker', function() {
-  var worker  = proxyquire('../lib/worker', { './logfmt': logfmt, 'http': http }),
-      handler = function(){};
+  var logfmt,
+      http,
+      worker,
+      handler;
 
-  process.setMaxListeners(0);
-  logfmt.log = function(){};
-  http.Server.prototype.listen = function(){};
+  beforeEach(function() {
+    logfmt  = {};
+    http    = {};
+    worker  = proxyquire('../lib/worker', { './logfmt': logfmt, 'http': http });
+    handler = function(){};
+    logfmt.log = function(){};
+    http.Server.prototype.listen = function(){};
+  });
 
   it('logs its start event', function() {
     spyOn(logfmt, 'log');

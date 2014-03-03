@@ -1,21 +1,20 @@
 require('./spec-helper');
 
 var emitter    = require('events').EventEmitter,
-    proxyquire = require('proxyquire'),
-    logfmt     = {};
+    proxyquire = require('proxyquire');
 
 describe('master', function() {
-  var cluster, master;
-
-  process.setMaxListeners(0);
-  logfmt.log = function(){};
+  var logfmt,
+      cluster,
+      master;
 
   beforeEach(function() {
+    logfmt = { log: function(){} }
     cluster = new emitter;
     cluster.disconnect = jasmine.createSpy();
     cluster.fork = jasmine.createSpy();
     cluster['@noCallThru'] = true
-    master  = proxyquire('../lib/master', { './logfmt': logfmt, 'cluster': cluster });
+    master = proxyquire('../lib/master', { './logfmt': logfmt, 'cluster': cluster });
   });
 
   it('logs its start event', function() {

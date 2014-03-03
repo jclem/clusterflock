@@ -1,3 +1,5 @@
+process.setMaxListeners(0);
+
 beforeEach(function() {
   process.kill = jasmine.createSpy();
 });
