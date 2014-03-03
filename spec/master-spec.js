@@ -13,6 +13,7 @@ describe('master', function() {
     cluster = new emitter;
     cluster.disconnect = jasmine.createSpy();
     cluster.fork = jasmine.createSpy();
+    cluster.worker = {};
     cluster['@noCallThru'] = true
     master = proxyquire('../lib/master', { './logfmt': logfmt, 'cluster': cluster });
   });
@@ -77,6 +78,24 @@ describe('master', function() {
     expect(process.kill).toHaveBeenCalledWith(process.pid, 'SIGTERM');
   });
 
+  it('logs subsequent SIGINT ignores', function() {
+    master({});
+    process.emit('SIGINT');
+    process.emit('SIGQUIT');
+    spyOn(logfmt, 'log');
+    process.emit('SIGINT');
+    expect(logfmt.log).toHaveBeenCalledWith({ evt: 'received SIGINT, ignoring (already shutting down)' });
+  });
+
+  it('does not forward subsequent SIGINTS', function() {
+    master({});
+    process.emit('SIGINT');
+    process.emit('SIGQUIT');
+    process.kill.reset()
+    process.emit('SIGINT');
+    expect(process.kill.callCount).toEqual(0);
+  });
+
   it('traps and logs SIGTERM', function() {
     master({});
     spyOn(logfmt, 'log');
@@ -88,6 +107,24 @@ describe('master', function() {
     master({});
     process.emit('SIGTERM');
     expect(process.kill).toHaveBeenCalledWith(process.pid, 'SIGQUIT');
+  });
+
+  it('logs subsequent SIGTERM ignores', function() {
+    master({});
+    process.emit('SIGTERM');
+    process.emit('SIGQUIT');
+    spyOn(logfmt, 'log');
+    process.emit('SIGTERM');
+    expect(logfmt.log).toHaveBeenCalledWith({ evt: 'received SIGTERM, ignoring (already shutting down)' });
+  });
+
+  it('does not forward subsequent SIGTERMS', function() {
+    master({});
+    process.emit('SIGTERM');
+    process.emit('SIGQUIT');
+    process.kill.reset()
+    process.emit('SIGTERM');
+    expect(process.kill.callCount).toEqual(0);
   });
 
   it('traps and logs SIGQUIT', function() {
@@ -102,6 +139,22 @@ describe('master', function() {
     spyOn(logfmt, 'log');
     process.emit('SIGQUIT');
     expect(cluster.disconnect).toHaveBeenCalled();
+  });
+
+  it('logs subsequent SIGQUIT ignores', function() {
+    master({});
+    process.emit('SIGQUIT');
+    spyOn(logfmt, 'log');
+    process.emit('SIGQUIT');
+    expect(logfmt.log).toHaveBeenCalledWith({ evt: 'received SIGQUIT, ignoring (already shutting down)' });
+  });
+
+  it('does not disconnect after subsequent SIGQUITS', function() {
+    master({});
+    process.emit('SIGQUIT');
+    cluster.disconnect.reset();
+    process.emit('SIGQUIT');
+    expect(cluster.disconnect).not.toHaveBeenCalled();
   });
 
   it('logs the SIGQUIT disconnect', function() {
