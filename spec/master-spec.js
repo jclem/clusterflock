@@ -65,35 +65,25 @@ describe('master', function() {
     expect(cluster.fork).not.toHaveBeenCalled();
   });
 
-  it('traps and logs SIGINT', function() {
+  it('traps and logs SIGINT once', function() {
     master({});
     spyOn(logfmt, 'log');
     process.emit('SIGINT');
-    expect(logfmt.log).toHaveBeenCalledWith({ evt: 'received SIGINT, sending myself SIGTERM' });
+    expect(logfmt.log).toHaveBeenCalledWith({ evt: 'received SIGINT, immediately shutting down' });
   });
 
-  it('forwards SIGINT to SIGTERM', function() {
+  it('re-calls SIGINT on SIGINT', function() {
     master({});
     process.emit('SIGINT');
-    expect(process.kill).toHaveBeenCalledWith(process.pid, 'SIGTERM');
+    expect(process.kill).toHaveBeenCalledWith(process.pid, 'SIGINT');
   });
 
-  it('logs subsequent SIGINT ignores', function() {
+  it('does not handle subsequent SIGINTs', function() {
     master({});
     process.emit('SIGINT');
-    process.emit('SIGQUIT');
-    spyOn(logfmt, 'log');
+    process.kill.reset();
     process.emit('SIGINT');
-    expect(logfmt.log).toHaveBeenCalledWith({ evt: 'received SIGINT, ignoring (already shutting down)' });
-  });
-
-  it('does not forward subsequent SIGINTS', function() {
-    master({});
-    process.emit('SIGINT');
-    process.emit('SIGQUIT');
-    process.kill.reset()
-    process.emit('SIGINT');
-    expect(process.kill.callCount).toEqual(0);
+    expect(process.kill).not.toHaveBeenCalledWith(process.pid, 'SIGINT');
   });
 
   it('traps and logs SIGTERM', function() {

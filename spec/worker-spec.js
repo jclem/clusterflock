@@ -35,17 +35,19 @@ describe('worker', function() {
     expect(http.Server.prototype.listen).toHaveBeenCalledWith(1)
   });
 
-  it('traps and logs SIGINT', function() {
+  it('traps and logs SIGINT once', function() {
     worker(handler, {});
     spyOn(logfmt, 'log');
     process.emit('SIGINT');
-    expect(logfmt.log).toHaveBeenCalledWith({ evt: 'received SIGINT, sending myself SIGTERM' });
+    expect(logfmt.log).toHaveBeenCalledWith({ evt: 'received SIGINT, immediately shutting down' });
   });
 
-  it('forwards SIGINT to SIGTERM', function() {
+  it('does not handle subsequent SIGINTs', function() {
     worker(handler, {});
     process.emit('SIGINT');
-    expect(process.kill).toHaveBeenCalledWith(process.pid, 'SIGTERM');
+    process.kill.reset();
+    process.emit('SIGINT');
+    expect(process.kill).not.toHaveBeenCalledWith(process.pid, 'SIGINT');
   });
 
   it('traps and logs SIGTERM', function() {
