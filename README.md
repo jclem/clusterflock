@@ -67,6 +67,8 @@ clusterflock responds to signals. [heroku, for example](https://devcenter.heroku
 
 Signal    | Behavior
 --------- | --------------------------------------------------------
+`SIGTTIN` | Fork an additonal worker
+`SIGTTOU` | Disconnect the least-recently forked worker
 `SIGINT`  | Kill master process (and therefore workers) immediately.
 `SIGTERM` | Forward myself `SIGQUIT`.
 `SIGQUIT` | Attempt a graceful shutdown (stop serving requests, serve remaining requests, and shut down).

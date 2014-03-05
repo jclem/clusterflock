@@ -65,6 +65,37 @@ describe('master', function() {
     expect(cluster.fork).not.toHaveBeenCalled();
   });
 
+  it('logs a fork on SIGTTIN', function() {
+    master({});
+    spyOn(logfmt, 'log');
+    process.emit('SIGTTIN');
+    expect(logfmt.log).toHaveBeenCalledWith({ evt: 'received TTIN, forking additional worker' });
+  });
+
+  it('forks a new worker on SIGTTIN', function() {
+    master({});
+    process.emit('SIGTTIN');
+    expect(cluster.fork).toHaveBeenCalled();
+  });
+
+  it('disconnects a worker on SIGTTOU', function() {
+    var spy = jasmine.createSpy();
+    cluster.workers = { 1: { disconnect: spy } };
+    master({});
+    spyOn(logfmt, 'log');
+    process.emit('SIGTTOU');
+    expect(spy).toHaveBeenCalled();
+  });
+
+  it('logs a disconnect on SIGTTOU', function() {
+    var spy = jasmine.createSpy();
+    cluster.workers = { 1: { disconnect: spy } };
+    master({});
+    spyOn(logfmt, 'log');
+    process.emit('SIGTTOU');
+    expect(logfmt.log).toHaveBeenCalledWith({ evt: 'received TTOU, removing worker' });
+  });
+
   it('traps and logs SIGINT once', function() {
     master({});
     spyOn(logfmt, 'log');
