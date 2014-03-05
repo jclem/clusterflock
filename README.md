@@ -36,13 +36,40 @@ app.use(express.bodyParser()); // &c.
 clusterflock(app);
 ```
 
+### Worker Re-forking
+
+When a worker disconnects, the master checks the value of its [`suicide`](http://nodejs.org/api/cluster.html#cluster_worker_suicide) attribute. If that value is true, master does nothing. If that value is not true (i.e. the worker died/was killed unintentionally), the master forks a new worker.
+
 ## Options
+
+The `clusterflock` function accepts an options object:
+
+```javascript
+var clusterflock = require('clusterflock'),
+    app          = require('./lib/app');
+    
+clusterflock(app, {
+  numWorkers: 1,
+  port      : 3000,
+  timeout   : 5000
+});
+```
  
 Name         | Type(s)            | Default | Description
 ------------ | ------------------ | --------------------------   | ------------------
 `numWorkers` | `Number`           | `os.cpus().length`           | number of worker processes to fork
 `port`       | `Number`, `String` | <code>process.env.PORT &#124;&#124; 5000</code>   | port the workers will listen on
 `timeout`    | `Number`           | `1000`                       | amount of time after receiving a graceful shutdown signal that the master will immediately kill workers
+
+## Signals
+
+clusterflock responds to signals. [heroku, for example](https://devcenter.heroku.com/articles/dynos#graceful-shutdown-with-sigterm), sends `SIGTERM` to stop and restart dynos, which will cause clusterflock to initiate a graceful shutdown. `SIGINT`, on the other hand, will force clusterflock to shut down immediately.
+
+Signal    | Behavior
+--------- | --------------------------------------------------------
+`SIGINT`  | Kill master process (and therefore workers) immediately.
+`SIGTERM` | Forward myself `SIGQUIT`.
+`SIGQUIT` | Attempt a graceful shutdown (stop serving requests, serve remaining requests, and shut down).
 
 ## Testing
 
