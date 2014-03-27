@@ -15,19 +15,15 @@ module.exports = function(handler, options) {
 };
 
 function setDefaultOptions(options) {
-  if (needsKey('numWorkers')) {
+  if (!options.hasOwnProperty('numWorkers')) {
     options.numWorkers = os.cpus().length;
   }
 
-  if (needsKey('port')) {
+  if (!options.hasOwnProperty('port')) {
     options.port = process.env.PORT || 5000;
   }
 
-  if (needsKey('timeout')) {
+  if (!options.hasOwnProperty('timeout')) {
     options.timeout = 1000;
-  }
-
-  function needsKey(key) {
-    return Object.keys(options).indexOf(key) === -1
   }
 }
