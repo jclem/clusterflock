@@ -1,6 +1,6 @@
 var cluster = require('cluster'),
-    master  = require('./lib/master'),
     os      = require('os'),
+    master  = require('./lib/master'),
     worker  = require('./lib/worker');
 
 module.exports = function(handler, options) {
