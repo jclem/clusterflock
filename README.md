@@ -4,6 +4,8 @@
 
 clusterflock is a simple clustering HTTP server for Node. It accepts a single request handler and a hash of options. The goal of clusterflock is to eliminate my own repeated need for a simple clustering server that implements graceful worker shutdown and re-forking of dead workers.
 
+**This package is deprecated.** I wrote a much more well-tested version without the known bugs of clusterflock called [teamster](https://www.npmjs.org/package/teamster).
+
 
 ## Installation
 
