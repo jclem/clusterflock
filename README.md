@@ -94,3 +94,11 @@ $ npm test
 ## Meta
 
 The photo in this readme is by Flickr user [Eugene Zemlyanskiy](http://www.flickr.com/photos/pictureperfectpose/81938785/). It has a [CC BY 2.0](http://creativecommons.org/licenses/by/2.0/) license.
+
+## Thanks, Heroku
+
+While I created and maintain this project, it was done while I was an employee
+of [Heroku][heroku] on the Human Interfaces Team, and they were kind enough to
+allow me to open source the work. Heroku is awesome.
+
+[heroku]: https://www.heroku.com/home
